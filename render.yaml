@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: pomodoro-companion
+    env: node
+    buildCommand: "npm install"
+    startCommand: "node backend/server.js"
+    plan: free
+    autoDeploy: true

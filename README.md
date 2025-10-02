@@ -1,2 +1,0 @@
-# Pomodoro-Companion
-Pomkdoro-Companion
