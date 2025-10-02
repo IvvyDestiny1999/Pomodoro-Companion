@@ -1,0 +1,1 @@
+document.addEventListener('DOMContentLoaded', ()=>{try{document.getElementById('version').textContent = 'v0.1.0';}catch(e){}});

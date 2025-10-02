@@ -1,1 +1,1 @@
-document.getElementById("version").innerText = "2.0.0";
+const VERSION = '0.1.0';

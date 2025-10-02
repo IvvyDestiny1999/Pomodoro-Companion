@@ -1,51 +1,40 @@
-from flask import Flask, render_template, request, redirect, url_for
-from models import db, Task
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+import os
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy()
 
-db.init_app(app)
+def create_app(test_config=None):
+    app = Flask(__name__, static_folder='static', template_folder='templates')
+    app.config.from_mapping(
+        SECRET_KEY=os.environ.get('SECRET_KEY', 'dev-secret'),
+        SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL', 'sqlite:///pomodoro.db'),
+        SQLALCHEMY_TRACK_MODIFICATIONS=False,
+    )
 
-with app.app_context():
-    db.create_all()
+    if test_config:
+        app.config.update(test_config)
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+    db.init_app(app)
 
-@app.route('/tasks', methods=['GET', 'POST'])
-def tasks():
-    if request.method == 'POST':
-        title = request.form.get('title')
-        if title:
-            new_task = Task(title=title, done=False)
-            db.session.add(new_task)
-            db.session.commit()
-    tasks = Task.query.all()
-    return render_template('tasks.html', tasks=tasks)
+    # Register blueprints if routes.py provides them
+    try:
+        from routes import main_bp
+        app.register_blueprint(main_bp)
+    except Exception as e:
+        app.logger.warning(f"Could not register blueprint from routes.py: {e}")
 
-@app.route('/done/<int:id>')
-def done_task(id):
-    task = Task.query.get(id)
-    task.done = True
-    db.session.commit()
-    return redirect(url_for('tasks'))
+    # Create DB tables
+    with app.app_context():
+        try:
+            db.create_all()
+        except Exception as e:
+            app.logger.warning(f"DB create_all failed: {e}")
 
-@app.route('/delete/<int:id>')
-def delete_task(id):
-    task = Task.query.get(id)
-    db.session.delete(task)
-    db.session.commit()
-    return redirect(url_for('tasks'))
+    return app
 
-@app.route('/stats')
-def stats():
-    return render_template('stats.html')
-
-@app.route('/logs')
-def logs():
-    return render_template('logs.html')
+# For gunicorn: module: callable -> app:create_app()
+app = create_app()
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)
