@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Gerenciamento de Tarefas</h2>
+
+<form method="POST">
+  <input type="text" name="title" placeholder="Nova tarefa" required>
+  <button type="submit">Adicionar</button>
+</form>
+
+<ul>
+  {% for task in tasks %}
+    <li>
+      {% if task.done %}
+        <s>{{ task.title }}</s>
+      {% else %}
+        {{ task.title }}
+      {% endif %}
+      <a href="{{ url_for('done_task', id=task.id) }}">✔️</a>
+      <a href="{{ url_for('delete_task', id=task.id) }}">❌</a>
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}

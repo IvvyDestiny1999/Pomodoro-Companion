@@ -1,0 +1,32 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  background: #f4f4f4;
+}
+header {
+  background: #ff6347;
+  padding: 10px;
+  color: white;
+}
+nav a {
+  margin: 0 10px;
+  color: white;
+  text-decoration: none;
+}
+.timer-section {
+  margin-top: 20px;
+}
+#timer {
+  font-size: 3em;
+  margin: 20px 0;
+}
+button {
+  margin: 5px;
+  padding: 10px 20px;
+}
+ul {
+  list-style: none;
+  padding: 0;
+}

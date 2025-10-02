@@ -1,0 +1,1 @@
+document.getElementById("version").innerText = "2.0.0";
