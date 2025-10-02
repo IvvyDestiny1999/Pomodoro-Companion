@@ -1,8 +1,6 @@
 services:
   - type: web
     name: pomodoro-companion
-    env: node
-    buildCommand: "npm install"
-    startCommand: "node backend/server.js"
-    plan: free
-    autoDeploy: true
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
